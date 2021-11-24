@@ -39,11 +39,11 @@ class Ship:
                 raise IndexError('Column is out of range.')
 
         if self.filled():
-            showBoard(board)
+            show_board(board)
             print(' '.join(str(coords) for coords in self.coordinates))
             raise IndexError('A ship already occupies that space.')
         else:
-            self.fillBoard()
+            self.fill_board()
 
     def filled(self):
         for coords in self.coordinates:
@@ -51,7 +51,7 @@ class Ship:
                 return True
         return False
 
-    def fillBoard(self):
+    def fill_board(self):
         for coords in self.coordinates:
             board[coords['row']][coords['col']] = 1
 
@@ -63,22 +63,24 @@ class Ship:
 
     def destroyed(self):
         for coords in self.coordinates:
-            if displayBoard[coords['row']][coords['col']] == 'O':
+            if DISPLAY_BOARD[coords['row']][coords['col']] == 'O':
                 return False
-            elif displayBoard[coords['row']][coords['col']] == '*':
+            elif DISPLAY_BOARD[coords['row']][coords['col']] == '*':
                 raise RuntimeError('Board display inaccurate')
         return True
 
 
 # Defined Subroutines
-def showBoard(board_array):
+def show_board(board_array):
+    """To display board content."""
     print("\n  " + " ".join(str(x) for x in range(1, colSize + 1)))
     for row in range(rowSize):
         print(str(row + 1) + " " + " ".join(str(c) for c in board_array[row]))
     print()
 
 
-def locationSearch(size, orientation):
+def location_search(size, orientation):
+    """Search location of ships on the battleship game."""
     locations = []
     if orientation != 'horizontal' and orientation != 'vertical':
         raise ValueError("Orientation must have a value of either 'horizontal' or 'vertical'.")
@@ -102,18 +104,20 @@ def locationSearch(size, orientation):
         return locations
 
 
-def randomLocation():
-    size = random.randint(minShipSize, maxShipSize)
+def random_location():
+    """Function to randomly place ship locations on board."""
+    size = random.randint(min_shipSize, max_shipSize)
     orientation = 'horizontal' if random.randint(0, 1) == 0 else 'vertical'
 
-    locations = locationSearch(size, orientation)
+    locations = location_search(size, orientation)
     if locations == 'None':
         return 'None'
     else:
         return {'location': locations[random.randint(0, len(locations) - 1)], 'size': size, 'orientation': orientation}
 
 
-def getRow():
+def get_row():
+    """Procedure to validate row selection by user."""
     while True:
         try:
             guess = int(input("Row Guess: "))
@@ -125,7 +129,8 @@ def getRow():
             print("\nPlease enter a number")
 
 
-def getColumn():
+def get_column():
+    """Procedure to validate column selection by user."""
     while True:
         try:
             guess = int(input("Column Guess: "))
@@ -138,6 +143,7 @@ def getColumn():
 
 
 def menu():
+    """Function to validate menu selection choices by the user."""
     print('''
 Select one of the following options:
 1.  Set up board
@@ -145,61 +151,79 @@ Select one of the following options:
 3.  Check high scores
 4.  Exit
 ''')
-    localChoice = int(input('Enter number choice: '))
-    while localChoice < 1 or choice > 4:
-        localChoice = int(input('Enter valid choice: '))
-    return localChoice
+    local_choice = int(input('Enter number choice: '))
+    while local_choice < 1 or choice > 4:
+        local_choice = int(input('Enter valid choice: '))
+    return local_choice
 
 
-def setBoard():
-    nPlayerName = input('Enter Player name: ')
-    nRowSize = sizeValidation('row', 10)
-    nColSize = sizeValidation('column', 10)
-    nShipNum = sizeValidation('ship', 5)
-    nMaxShipSize = sizeValidation('max ship size', 3)
-    nMinShipSize = sizeValidation('min ship size', 1)
-    nRoundsPerGame = sizeValidation('number of round', 50)
-    return nPlayerName, nRowSize, nColSize, nShipNum, nMaxShipSize, nMinShipSize, nRoundsPerGame
+def set_board():
+    """Function for user selection on choices for the Battlship Board."""
+    n_player_name = input('Enter Player name: ')
+    n_rowsize = size_validation('row', 10)
+    n_colsize = size_validation('column', 10)
+    n_shipnum = size_validation('ship', 5)
+    n_max_shipsize = size_validation('max ship size', 3)
+    nmin_ship_size = size_validation('min ship size', 1)
+    n_roundspergame = size_validation('number of round', 50)
+    return n_player_name, n_rowsize, n_colsize, n_shipnum, n_max_shipsize, nmin_ship_size, n_roundspergame
 
 
-def sizeValidation(direct, nMax):
+def size_validation(direct, n_max):
+    """Function to range check the entries for the set_board function."""
     num = int(input(f"Enter the number of {direct}'s: "))
-    while num < 1 or num > nMax:
+    while num < 1 or num > n_max:
         num = int(input(f'Enter a valid {direct} value: '))
     return num
 
 
+def game_details(player, row, col, shipno, max_ship, min_ship, rounds):
+    """Procedure to output the settings selected by the user."""
+    print(f'''
+-----------------------------------------------------------------
+Welcome {player} to the BattleShip Game.
+The Board size is {row} by {col}
+The number of ships is {shipno}
+The ship size ranges from {min_ship} to {max_ship} blocks
+You have {rounds} guesses before you sink!
+Good Luck!
+-----------------------------------------------------------------
+''')
+
 # Main Program => Play Game
 
+
 print("\033[1m" + 'Welcome to the Battleship Game' + "\033[0m/n")
-playerName, rowSize, colSize, shipNum, maxShipSize, minShipSize, roundsPerGame = None, None, None, None, None, None, None
-repeat = True
-while repeat is True:
+playerName, rowSize, colSize, shipNum, max_shipSize, min_shipSize, roundsPerGame = None, None, None, None, None, None, None
+
+REPEAT = True
+while REPEAT is True:
     choice = menu()
     if choice == 1:
         # Settings Variables
-        playerName, rowSize, colSize, shipNum, maxShipSize, minShipSize, roundsPerGame = setBoard()
+        playerName, rowSize, colSize, shipNum, max_shipSize, min_shipSize, roundsPerGame = set_board()
+        game_details(playerName, rowSize, colSize, shipNum, max_shipSize, min_shipSize, roundsPerGame)
     elif choice == 2:
         if playerName is None:
             print('You need to set up the board first')
         else:
-            displayBoard = None
+            DISPLAY_BOARD = None
 
             # Create lists
             shipList = []
             board = [[0] * colSize for x in range(rowSize)]
-            displayBoard = [["~"] * colSize for x in range(rowSize)]
-            showBoard(displayBoard)
+            DISPLAY_BOARD = [["~"] * colSize for x in range(rowSize)]
+            show_board(DISPLAY_BOARD)
 
-            temp = 0
-            while temp < shipNum:
-                shipInfo = randomLocation()
+            TEMP = 0
+            while TEMP < shipNum:
+                shipInfo = random_location()
                 if shipInfo == 'None':
                     continue
                 else:
                     shipList.append(Ship(shipInfo['size'], shipInfo['orientation'], shipInfo['location']))
-                    temp += 1
-            del temp
+                    TEMP += 1
+            del TEMP
 
             for turn in range(roundsPerGame):
                 print("Turn:", turn + 1, "of", roundsPerGame)
@@ -207,26 +231,26 @@ while repeat is True:
                 print()
                 cordGuess = {}
                 while True:
-                    cordGuess['row'] = getRow()
-                    cordGuess['col'] = getColumn()
-                    if displayBoard[cordGuess['row']][cordGuess['col']] == 'X' or displayBoard[cordGuess['row']][cordGuess['col']] == '*':
+                    cordGuess['row'] = get_row()
+                    cordGuess['col'] = get_column()
+                    if DISPLAY_BOARD[cordGuess['row']][cordGuess['col']] == 'X' or DISPLAY_BOARD[cordGuess['row']][cordGuess['col']] == '*':
                         print("\nYou guessed that one already.")
                     else:
                         break
-                hitShip = False
+                HITSHIP = False
                 for ship in shipList:
                     if ship.contains(cordGuess):
                         print("Hit!")
-                        hitShip = True
-                        displayBoard[cordGuess['row']][cordGuess['col']] = 'X'
+                        HITSHIP = True
+                        DISPLAY_BOARD[cordGuess['row']][cordGuess['col']] = 'X'
                         if ship.destroyed():
                             print("Ship Destroyed!")
                             shipList.remove(ship)
                         break
-                if not hitShip:
-                    displayBoard[cordGuess['row']][cordGuess['col']] = '*'
+                if not HITSHIP:
+                    DISPLAY_BOARD[cordGuess['row']][cordGuess['col']] = '*'
                     print("You missed!")
-                showBoard(displayBoard)
+                show_board(DISPLAY_BOARD)
                 if not shipList:
                     break
 
