@@ -6,6 +6,7 @@ import random
 
 
 class Ship:
+    """Class approach for board manipulation"""
 
     def __init__(self, size, orientation, location,):
         self.size = size
@@ -19,9 +20,9 @@ class Ship:
         if orientation == 'horizontal':
             if location['row'] in range(rowSize):
                 self.coordinates = []
-                for x in range(size):
-                    if location['col'] + x in range(colSize):
-                        self.coordinates.append({'row': location['row'], 'col': location['col'] + x})
+                for col in range(size):
+                    if location['col'] + col in range(colSize):
+                        self.coordinates.append({'row': location['row'], 'col': location['col'] + col})
                     else:
                         raise IndexError('Column is out of range.')
             else:
@@ -29,9 +30,9 @@ class Ship:
         elif orientation == 'vertical':
             if location['col'] in range(colSize):
                 self.coordinates = []
-                for x in range(size):
-                    if location['row'] + x in range(rowSize):
-                        self.coordinates.append({'row': location['row'] + x, 'col': location['col']})
+                for row in range(size):
+                    if location['row'] + row in range(rowSize):
+                        self.coordinates.append({'row': location['row'] + row, 'col': location['col']})
                     else:
                         raise IndexError('Row is out of range.')
             else:
@@ -144,26 +145,26 @@ Select one of the following options:
 3.  Check high scores
 4.  Exit
 ''')
-    choice = int(input('Enter number choice: '))
-    while choice < 1 or choice > 4:
-        choice = int(input('Enter valid choice: '))
-    return choice
+    localChoice = int(input('Enter number choice: '))
+    while localChoice < 1 or choice > 4:
+        localChoice = int(input('Enter valid choice: '))
+    return localChoice
 
 
 def setBoard():
-    playerName = input('Enter Player name: ')
-    rowSize = sizeValidation('row', 10)
-    colSize = sizeValidation('column', 10)
-    shipNum = sizeValidation('ship', 5)
-    maxShipSize = sizeValidation('max ship size', 3)
-    minShipSize = sizeValidation('min ship size', 1)
-    roundsPerGame = sizeValidation('number of round', 50)
-    return playerName, rowSize, colSize, shipNum, maxShipSize, minShipSize, roundsPerGame
+    nPlayerName = input('Enter Player name: ')
+    nRowSize = sizeValidation('row', 10)
+    nColSize = sizeValidation('column', 10)
+    nShipNum = sizeValidation('ship', 5)
+    nMaxShipSize = sizeValidation('max ship size', 3)
+    nMinShipSize = sizeValidation('min ship size', 1)
+    nRoundsPerGame = sizeValidation('number of round', 50)
+    return nPlayerName, nRowSize, nColSize, nShipNum, nMaxShipSize, nMinShipSize, nRoundsPerGame
 
 
-def sizeValidation(direct, max):
+def sizeValidation(direct, nMax):
     num = int(input(f"Enter the number of {direct}'s: "))
-    while num < 1 or num > max:
+    while num < 1 or num > nMax:
         num = int(input(f'Enter a valid {direct} value: '))
     return num
 
